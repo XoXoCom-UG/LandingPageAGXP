@@ -1,0 +1,418 @@
+/* =============================================================================
+   THE ROBOTS
+   The mascot geometry is the product's own (components/layout/agent-mascot.tsx):
+   a geometric little character, Consultant in a tie, Coach in a headset, both
+   growing a glowing antenna at level 2 and an accessory at level 3. The motion
+   is re-authored here against this site's tokens, but the shapes are unchanged,
+   so the face on the landing page is literally the face in the app.
+   ============================================================================= */
+.mascot {
+  display: inline-block;
+  position: relative;
+  color: var(--primary-soft);
+  --eye-x: 0px;
+  --eye-y: 0px;
+}
+
+.mascot svg { width: 100%; height: 100%; overflow: visible; }
+
+.m-face {
+  fill: var(--elevated);
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.m-face-panel { fill: color-mix(in oklab, var(--bg-deep) 80%, transparent); }
+.m-eye { fill: var(--primary-soft); }
+.m-mouth, .m-dot { fill: color-mix(in oklab, var(--primary-soft) 55%, transparent); }
+.m-antenna { stroke: var(--border-strong); }
+.m-antenna-dot { fill: var(--primary-soft); }
+.m-rank, .m-work-ring { stroke: none; fill: none; }
+.m-headset, .m-tie, .m-visor, .m-mic, .m-hud-lens { display: none; }
+
+.mascot-coach .m-headset { display: block; }
+.mascot-coach .m-headset path { stroke: var(--primary-soft); fill: none; }
+.mascot-coach .m-headset rect { fill: var(--primary); }
+
+.mascot-consultant .m-tie { display: block; fill: var(--primary); }
+.m-star { fill: #fff; }
+
+.m-hud-lens { display: block; }
+.m-hud-ring { stroke: var(--primary-soft); fill: none; }
+.m-hud-inner { fill: color-mix(in oklab, var(--primary-soft) 20%, transparent); }
+.m-hud-spark { fill: #fff; }
+.m-hud-scan { stroke: var(--primary-soft); }
+
+.m-visor { display: block; }
+.m-visor rect { fill: var(--primary); }
+.m-visor-line { stroke: var(--primary-soft); }
+.m-mic { display: block; }
+.m-mic-arm { stroke: var(--primary-soft); }
+.m-mic-tip { fill: var(--primary-soft); }
+
+/* Level 2: the antenna lights up and keeps a slow pulse. */
+.mascot.has-glow .m-antenna-dot { filter: drop-shadow(0 0 5px var(--primary-soft)); }
+.mascot.has-glow .m-rank {
+  stroke: color-mix(in oklab, var(--primary-soft) 60%, transparent);
+  animation: rank-pulse 3.2s var(--ease-in-out) infinite;
+  transform-origin: 24px 5px;
+}
+
+@keyframes rank-pulse {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.12); }
+}
+
+/* Breathing, blinking, and eyes that track the cursor. The tracking values are
+   written straight to --eye-x / --eye-y from JS, so following the pointer never
+   costs a React render — same trick the app uses. */
+.m-head { animation: breathe 4.6s var(--ease-in-out) infinite; transform-origin: 24px 30px; }
+.m-eyes { animation: blink 6.4s steps(1, end) infinite; transform-origin: 24px 23.5px; }
+.m-eye-track { transform: translate(var(--eye-x), var(--eye-y)); }
+
+@keyframes breathe {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-0.6px) scale(1.012); }
+}
+
+@keyframes blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  94%, 96% { transform: scaleY(0.08); }
+}
+
+.mascot.is-thinking .m-work-ring {
+  stroke: color-mix(in oklab, var(--primary-soft) 70%, transparent);
+  animation: ring-spin 2.6s linear infinite;
+  transform-origin: 24px 5px;
+}
+
+@keyframes ring-spin { to { transform: rotate(360deg); } }
+
+.mascot.is-speaking .m-mouth {
+  animation: talk 0.42s var(--ease-in-out) infinite alternate;
+  transform-origin: 24px 33px;
+}
+
+@keyframes talk {
+  from { transform: scaleY(0.6) scaleX(0.9); }
+  to { transform: scaleY(1.5) scaleX(1.05); }
+}
+
+.mascot.is-listening .m-dots .m-dot { animation: dots 1.3s var(--ease-in-out) infinite; }
+.mascot.is-listening .m-dots .m-dot:nth-child(2) { animation-delay: 0.16s; }
+.mascot.is-listening .m-dots .m-dot:nth-child(3) { animation-delay: 0.32s; }
+.mascot.is-listening .m-mouth { opacity: 0; }
+.mascot:not(.is-listening) .m-dots { opacity: 0; }
+
+@keyframes dots {
+  0%, 100% { opacity: 0.25; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-1.4px); }
+}
+
+/* =============================================================================
+   SNEAK PEEKS
+   Miniatures of the real surfaces: the interview rail, a choice chip, and the
+   visual blocks the deliverables are built from (agxp-kpi, agxp-gap,
+   agxp-flow, agxp-roadmap, agxp-risks, agxp-stakeholders). Enough to recognise
+   the product, not enough to be the product.
+   ============================================================================= */
+.peek {
+  font-size: var(--step--1);
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+}
+
+.peek-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.peek-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+/* KPI tiles */
+.kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+
+.kpi {
+  padding: 12px 14px;
+  border-radius: var(--r-sm);
+  background: color-mix(in oklab, var(--surface-2) 70%, transparent);
+  border: 1px solid var(--border);
+}
+
+.kpi-label { color: var(--fg-muted); font-size: 11px; line-height: 1.3; }
+.kpi-value { font-family: var(--font-display); font-size: 22px; letter-spacing: -0.03em; margin-top: 4px; }
+.kpi.is-good .kpi-value { color: var(--success); }
+.kpi.is-bad .kpi-value { color: var(--danger); }
+.kpi.is-warn .kpi-value { color: var(--warn); }
+
+/* Today vs target */
+.gap-row { display: grid; gap: 6px; }
+.gap-label { display: flex; justify-content: space-between; color: var(--fg-secondary); font-size: 11px; }
+.gap-label b { font-family: var(--font-mono); font-weight: 500; color: var(--fg); }
+
+.gap-track {
+  height: 8px;
+  border-radius: var(--r-pill);
+  background: color-mix(in oklab, var(--fg) 8%, transparent);
+  position: relative;
+  overflow: hidden;
+}
+
+.gap-now {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--primary), var(--primary-soft));
+  width: var(--w, 50%);
+  transition: width 1.6s var(--ease-out);
+}
+
+.gap-target {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  left: var(--t, 20%);
+  width: 2px;
+  background: var(--fg);
+  opacity: 0.5;
+}
+
+/* as-is / to-be chain */
+.flow { display: grid; gap: 8px; }
+.flow-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+.flow-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  width: 38px;
+  flex: none;
+}
+
+.flow-step {
+  padding: 6px 9px;
+  border-radius: var(--r-xs);
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--surface-2) 60%, transparent);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.flow-step.is-auto {
+  border-color: color-mix(in oklab, var(--primary-soft) 50%, transparent);
+  background: color-mix(in oklab, var(--primary) 22%, transparent);
+  color: var(--fg);
+}
+
+.flow-step.is-auto::after {
+  content: "auto";
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--primary-soft);
+  margin-left: 6px;
+}
+
+/* Roadmap */
+.roadmap { display: grid; gap: 10px; }
+.road-phase { display: grid; grid-template-columns: 60px 1fr; gap: 12px; align-items: start; }
+
+.road-when {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary-soft);
+  padding-top: 2px;
+}
+
+.road-body { display: grid; gap: 4px; position: relative; padding-left: 16px; }
+
+.road-body::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 6px;
+  bottom: 2px;
+  width: 1px;
+  background: linear-gradient(var(--primary-soft), transparent);
+}
+
+.road-body::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--primary-soft);
+  box-shadow: 0 0 10px var(--primary-soft);
+}
+
+.road-item { font-size: 11px; color: var(--fg-secondary); }
+
+/* Risk matrix */
+.risk-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+
+.risk-cell {
+  aspect-ratio: 1.7;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--fg) 4%, transparent);
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+  line-height: 1.2;
+  color: var(--fg-muted);
+  text-align: center;
+  padding: 4px;
+}
+
+.risk-cell.is-hot {
+  background: color-mix(in oklab, var(--danger) 26%, transparent);
+  border-color: color-mix(in oklab, var(--danger) 45%, transparent);
+  color: var(--fg);
+}
+
+.risk-cell.is-mid {
+  background: color-mix(in oklab, var(--warn) 22%, transparent);
+  border-color: color-mix(in oklab, var(--warn) 40%, transparent);
+  color: var(--fg);
+}
+
+/* Stakeholders */
+.stake { display: grid; gap: 6px; }
+
+.stake-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: var(--r-xs);
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--surface-2) 55%, transparent);
+  font-size: 11px;
+}
+
+.stake-mood {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--border);
+  color: var(--fg-muted);
+}
+
+.stake-mood.is-skeptic { color: var(--warn); border-color: color-mix(in oklab, var(--warn) 45%, transparent); }
+.stake-mood.is-champion { color: var(--success); border-color: color-mix(in oklab, var(--success) 45%, transparent); }
+
+/* The interview rail */
+.rail { display: grid; gap: 10px; }
+.rail-track { display: flex; gap: 4px; }
+
+.rail-seg {
+  height: 4px;
+  flex: 1;
+  border-radius: var(--r-pill);
+  background: color-mix(in oklab, var(--fg) 10%, transparent);
+  overflow: hidden;
+  position: relative;
+}
+
+.rail-seg.is-done {
+  background: var(--primary-soft);
+  box-shadow: 0 0 12px color-mix(in oklab, var(--primary-soft) 60%, transparent);
+}
+
+.rail-seg.is-now::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--primary-soft), transparent);
+  animation: rail-scan 1.9s var(--ease-in-out) infinite;
+}
+
+@keyframes rail-scan {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.rail-meta { display: flex; justify-content: space-between; font-size: 10px; color: var(--fg-muted); font-family: var(--font-mono); letter-spacing: 0.08em; }
+
+/* Chat */
+.chat { display: grid; gap: 8px; }
+
+.bubble {
+  padding: 10px 14px;
+  border-radius: var(--r-md);
+  background: color-mix(in oklab, var(--surface-2) 75%, transparent);
+  border: 1px solid var(--border);
+  max-width: 90%;
+  line-height: 1.5;
+  font-size: 12px;
+}
+
+.bubble.is-user {
+  margin-left: auto;
+  background: linear-gradient(140deg, var(--primary), var(--primary-soft));
+  color: #fff;
+  border-color: transparent;
+}
+
+.choices { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.choice {
+  padding: 6px 12px;
+  border-radius: var(--r-pill);
+  border: 1px solid color-mix(in oklab, var(--primary-soft) 40%, transparent);
+  font-size: 11px;
+  color: var(--primary-soft);
+  background: color-mix(in oklab, var(--primary) 12%, transparent);
+  transition: background-color 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+}
+
+.choice:hover {
+  background: color-mix(in oklab, var(--primary) 30%, transparent);
+  transform: translateY(-1px);
+}
+
+/* The marker protocol, shown as the UI it turns into */
+.marker {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--fg-muted);
+  padding: 4px 8px;
+  border-radius: 5px;
+  border: 1px dashed var(--border-strong);
+  white-space: nowrap;
+  display: inline-block;
+}
+
+/* ── Reduced motion ────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  [data-reveal] { opacity: 1; transform: none; }
+}
