@@ -85,3 +85,20 @@ The landing page signs nobody in itself: sessions live on the app's origin.
   close that gap: the login page starts in sign-up mode when `mode=signup`, and
   stashes `key` (e.g. in `sessionStorage`) for `BetaGate` to pre-fill after the
   account exists.
+
+## Emails
+
+`emails/beta-invite.html` is the beta invitation, in the landing page's look,
+written for Resend Templates (paste it via *Upload HTML*). It uses two template
+variables:
+
+| Variable | Value |
+| --- | --- |
+| `{{{BETA_KEY}}}` | the key, e.g. `AGXP-7K2M4P` |
+| `{{{APP_URL}}}` | the app's origin, no trailing slash — the button opens `/login` |
+
+It is table-based with inline styles on purpose: that is what Gmail and
+Outlook actually render. Its images (mark, both mascots, the hero "core") are
+PNG/JPG, because neither client shows SVG or WebGL. They live in
+`public/email/`, are served from this site's domain, and are regenerated with
+`python scripts/email-assets.py`.
