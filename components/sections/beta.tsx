@@ -16,7 +16,7 @@ export function Beta() {
 
       <div className="beta-inner">
         <p className="eyebrow" data-reveal>
-          <span className="eyebrow-index">08</span> Access
+          <span className="eyebrow-index">07</span> Access
         </p>
 
         <h2 className="display h-1" data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>

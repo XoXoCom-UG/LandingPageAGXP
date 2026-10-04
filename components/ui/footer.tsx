@@ -30,7 +30,6 @@ export function Footer() {
               <a href="#duo">The pair</a>
               <a href="#roster">Profiles</a>
               <a href="#interview">The interview</a>
-              <a href="#cases">Test cases</a>
               <a href="#beta">Beta access</a>
               <a href={LOGIN_URL}>Log in</a>
             </nav>

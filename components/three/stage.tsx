@@ -11,7 +11,7 @@ import { applyTierClass, dprFor, FPS_CAP, perf, type Tier } from "@/lib/perf";
 import { useTheme } from "@/lib/theme";
 import { clamp01, ease, prefersReducedMotion, scroll } from "@/lib/scroll";
 import { Beams, Core, Dust } from "@/components/three/core";
-import { BetaToken, CaseObjects, DocumentStack, MemoryShards, Prism, StationPath } from "@/components/three/artifacts";
+import { BetaToken, DocumentStack, MemoryShards, Prism, StationPath } from "@/components/three/artifacts";
 import { Robot } from "@/components/three/robot";
 
 /**
@@ -264,10 +264,6 @@ function World({
           <Robot role="consultant" accent={accent} soft={soft} scale={1.1} level={3} position={[0, 0, 0]} />
           <MemoryShards accent={accent} soft={soft} sectionId="memory" count={lowPower ? 8 : 16} />
         </group>
-      </Slot>
-
-      <Slot id="cases" travel={14} depth={6}>
-        <CaseObjects accent={accent} soft={soft} />
       </Slot>
 
       <Slot id="accents" travel={14} depth={6}>

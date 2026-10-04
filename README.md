@@ -57,15 +57,11 @@ are copies, not imports.
    public: the app stores conversations in Supabase, so anyone with database
    access can technically read them. In Germany an overstated privacy claim is
    a competition-law risk (UWG), not just a wording question.
-3. **Naming a real company as a test case.** The board lists "Trassenplanung
-   DB InfraGO". The page says "Rail route planning with AI tooling" instead —
-   a company's name on a public page needs that company's OK. One string in
-   `components/sections/use-cases.tsx` once you have it.
-4. **`metadataBase`** in `app/layout.tsx` is set to
+3. **`metadataBase`** in `app/layout.tsx` is set to
    `https://agentixprojects.com`. Correct it if the domain differs.
-5. **Open Graph image.** There is none yet; social previews will fall back to
+4. **Open Graph image.** There is none yet; social previews will fall back to
    text only.
-6. **Check the roster is current.** `components/sections/roster.tsx` lists the
+5. **Check the roster is current.** `components/sections/roster.tsx` lists the
    five agents seeded in `supabase/seed.sql`. The live app already shows at
    least one more ("Digital Transformation Manager") — add any missing
    profiles there and update the "5 agent profiles" figure in
