@@ -82,7 +82,7 @@ export function Logo({ size = 34, compact = false }: { size?: number; compact?: 
       {!compact && (
         <span className="logo-word">
           <span className="logo-name">
-            Agenti<span className="logo-x">x</span>
+            Agenti<span className="logo-x">X</span>
           </span>
           <span className="logo-sub">Projects</span>
         </span>

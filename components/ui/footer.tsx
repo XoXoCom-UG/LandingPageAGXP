@@ -2,18 +2,13 @@
 
 import { AccentPicker } from "@/components/ui/nav";
 import { Logo } from "@/components/brand/logo";
+import { LEGAL_LINKS, LOGIN_URL } from "@/lib/links";
 
 /**
- * Note for whoever ships this: the product is operated from Germany and the app
- * already carries Impressum, Datenschutz and AGB pages. Point the three links
- * below at them before this goes public — a public marketing page without an
- * Impressum is a problem in DE.
+ * The legal links point at the app's own Impressum, Datenschutz and AGB rather
+ * than copies — one set of legal text, kept in one place. They resolve once
+ * NEXT_PUBLIC_APP_URL is set.
  */
-const LEGAL = [
-  { label: "Imprint", href: "/impressum" },
-  { label: "Privacy", href: "/datenschutz" },
-  { label: "Terms", href: "/agb" },
-];
 
 export function Footer() {
   return (
@@ -33,14 +28,16 @@ export function Footer() {
             <nav aria-label="Sections">
               <span className="footer-head">Page</span>
               <a href="#duo">The pair</a>
+              <a href="#roster">Profiles</a>
               <a href="#interview">The interview</a>
-              <a href="#document">The output</a>
+              <a href="#cases">Test cases</a>
               <a href="#beta">Beta access</a>
+              <a href={LOGIN_URL}>Log in</a>
             </nav>
 
             <nav aria-label="Legal">
               <span className="footer-head">Legal</span>
-              {LEGAL.map(l => (
+              {LEGAL_LINKS.map(l => (
                 <a key={l.href} href={l.href}>
                   {l.label}
                 </a>
@@ -55,7 +52,7 @@ export function Footer() {
         </div>
 
         <div className="footer-base">
-          <span>© {new Date().getFullYear()} Agentix Projects</span>
+          <span>© {new Date().getFullYear()} AgentiX Projects</span>
           <span className="muted">AgxP</span>
         </div>
       </div>

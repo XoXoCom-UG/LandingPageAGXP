@@ -1,12 +1,21 @@
 "use client";
 
+import { BetaForm } from "@/components/ui/beta-form";
 import { Mascot } from "@/components/ui/mascot";
 import { Section } from "@/components/ui/section";
 
 /**
- * The hero says one thing and shows one object. Everything else about the
- * product is earned further down the page.
+ * The hero, as drawn on the strategy board: the name, the promise, five
+ * reasons, the two agents, and the door — a beta key — all on the first screen.
  */
+const PROMISES = [
+  "Execute your own AI business ideas",
+  "Progress your team with AI innovation trends",
+  "Foster your company's success with high-quality AI support",
+  "Protect your enterprise's data with our 100% private service — no user data is visible",
+  "Achieve your project goals with AgentiX's AI Coaches and Consultants",
+];
+
 export function Hero() {
   return (
     <Section id="hero" tall className="hero">
@@ -20,41 +29,37 @@ export function Hero() {
         </p>
 
         <h1 className="display h-hero hero-title" data-reveal style={{ ["--reveal-delay" as string]: "90ms" }}>
-          Two agents.
+          Agenti<span className="grad-text">X</span>
           <br />
-          <span className="grad-text">One project.</span>
+          Projects
         </h1>
 
-        <p className="lede hero-lede" data-reveal style={{ ["--reveal-delay" as string]: "180ms" }}>
-          An AI Consultant plans your AI or IT transformation with you. An AI Coach gets your people
-          through it. Same project, same screen.
+        <p className="hero-tagline" data-reveal style={{ ["--reveal-delay" as string]: "170ms" }}>
+          {/* Non-breaking hyphen: on a phone the line must not split inside the name. */}
+          Train your AI Project&#8209;Agents
         </p>
 
-        <div className="hero-actions" data-reveal style={{ ["--reveal-delay" as string]: "260ms" }}>
-          <a href="#beta" className="btn btn-primary">
-            Request a beta token
-          </a>
-          <a href="#duo" className="btn btn-ghost">
-            See how it works
-          </a>
-        </div>
+        <ul className="glass hero-promises" data-reveal style={{ ["--reveal-delay" as string]: "240ms" }}>
+          {PROMISES.map(p => (
+            <li key={p}>{p}</li>
+          ))}
+        </ul>
 
-        <div className="hero-pair" data-reveal style={{ ["--reveal-delay" as string]: "340ms" }}>
+        <div className="hero-pair" data-reveal style={{ ["--reveal-delay" as string]: "320ms" }}>
           <span className="hero-pair-item">
             <Mascot role="consultant" size={30} level={3} state="idle" />
-            Consultant <em>→ Transformation Concept</em>
+            Consultant <em>→ Execution &amp; Growth</em>
           </span>
           <span className="hero-pair-sep" />
           <span className="hero-pair-item">
             <Mascot role="coach" size={30} level={3} state="listening" />
-            Coach <em>→ Change Plan</em>
+            Coach <em>→ Process &amp; Support</em>
           </span>
         </div>
-      </div>
 
-      <div className="scroll-hint" aria-hidden="true">
-        <span className="scroll-hint-line" />
-        <span className="scroll-hint-label">scroll</span>
+        <div className="hero-register" data-reveal style={{ ["--reveal-delay" as string]: "400ms" }}>
+          <BetaForm />
+        </div>
       </div>
     </Section>
   );

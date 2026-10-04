@@ -24,7 +24,7 @@ export function Output() {
 
       <header className="sec-head sec-head-wide" data-reveal>
         <p className="eyebrow">
-          <span className="eyebrow-index">04</span> The output
+          <span className="eyebrow-index">05</span> The output
         </p>
         <h2 className="display h-1">
           The document is <span className="grad-text">drawn</span>,

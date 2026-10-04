@@ -10,6 +10,7 @@ import { Memory } from "@/components/sections/memory";
 import { Accents } from "@/components/sections/accents";
 import { Beta } from "@/components/sections/beta";
 import { Marquee } from "@/components/sections/marquee";
+import { UseCases } from "@/components/sections/use-cases";
 
 /**
  * The page is one continuous fall past seven objects. The WebGL stage is fixed
@@ -26,10 +27,11 @@ export default function Page() {
         <Hero />
         <Pair />
         <Roster />
+        <Memory />
         <Marquee />
         <Interview />
         <Output />
-        <Memory />
+        <UseCases />
         <Accents />
         <Beta />
       </main>

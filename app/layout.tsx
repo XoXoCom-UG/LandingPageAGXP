@@ -28,12 +28,12 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://agentixprojects.com"),
-  title: "Agentix Projects — Two agents. One project.",
+  title: "AgentiX Projects — Train your AI Project-Agents",
   description:
     "AgXP pairs an AI Consultant with an AI Coach on the same transformation project. They run the interview, you answer, and the documents build themselves.",
-  applicationName: "Agentix Projects",
+  applicationName: "AgentiX Projects",
   keywords: [
-    "Agentix Projects",
+    "AgentiX Projects",
     "AgXP",
     "AI consultant",
     "AI change coach",
@@ -41,15 +41,15 @@ export const metadata: Metadata = {
     "change plan",
   ],
   openGraph: {
-    title: "Agentix Projects — Two agents. One project.",
+    title: "AgentiX Projects — Train your AI Project-Agents",
     description:
       "An AI Consultant and an AI Coach, working your transformation through with you. Currently in closed beta.",
     type: "website",
-    siteName: "Agentix Projects",
+    siteName: "AgentiX Projects",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Agentix Projects — Two agents. One project.",
+    title: "AgentiX Projects — Train your AI Project-Agents",
     description: "An AI Consultant and an AI Coach, working your transformation through with you.",
   },
   icons: {

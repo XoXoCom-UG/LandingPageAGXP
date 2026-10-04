@@ -16,7 +16,7 @@ export function Interview() {
       <div className="split">
         <div className="split-text">
           <p className="eyebrow" data-reveal>
-            <span className="eyebrow-index">03</span> The interview
+            <span className="eyebrow-index">04</span> The interview
           </p>
           <h2 className="display h-1" data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
             It interviews you.

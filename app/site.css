@@ -739,6 +739,198 @@ html.light .peek-card:hover {
   font-family: var(--font-mono);
 }
 
+/* ── Nav: the door ─────────────────────────────────────────────────────────── */
+.nav-login {
+  font-size: var(--step--1);
+  color: var(--fg-secondary);
+  padding: 8px 4px;
+  margin-right: auto;
+  transition: color 0.3s var(--ease-out);
+}
+
+.nav-login:hover { color: var(--fg); }
+
+/* Google's own button language: white, the four-colour G, plain label. Same
+   in both themes, because that is what people recognise. */
+.btn-google {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 16px;
+  border-radius: var(--r-pill);
+  background: #ffffff;
+  color: #1f1f1f;
+  border: 1px solid #dadce0;
+  font-size: var(--step--1);
+  font-weight: 500;
+  white-space: nowrap;
+  transition: box-shadow 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+}
+
+.btn-google:hover {
+  box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.45);
+  transform: translateY(-1px);
+}
+
+/* ── Hero, board version ───────────────────────────────────────────────────── */
+.hero-tagline {
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--fg-secondary);
+  margin-top: -6px;
+}
+
+.hero-promises {
+  display: grid;
+  gap: 10px;
+  width: min(100%, 640px);
+  padding: 22px 26px;
+  text-align: left;
+  border-radius: var(--r-lg);
+}
+
+.hero-promises li {
+  position: relative;
+  padding-left: 22px;
+  font-size: var(--step-0);
+  line-height: 1.45;
+  color: var(--fg-secondary);
+}
+
+.hero-promises li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0.5em;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  transform: rotate(45deg);
+  background: var(--primary-soft);
+  box-shadow: 0 0 10px var(--primary-soft);
+}
+
+.hero-register, .beta-register { width: min(100%, 720px); margin-top: 6px; }
+
+/* The board puts the whole hero — name, promise, five reasons, the pair and the
+   key — on the first screen, so the hero runs tighter than the other sections. */
+.hero.section { padding-top: clamp(84px, 11vh, 120px); padding-bottom: clamp(48px, 8vh, 96px); }
+.hero .hero-inner { gap: 16px; }
+.hero .hero-title { font-size: clamp(3rem, 1.4rem + 5.2vw, 6.4rem); }
+.hero .hero-promises { gap: 7px; padding: 18px 24px; }
+.hero .hero-promises li { font-size: var(--step--1); }
+.hero .hero-pair { margin-top: 2px; }
+
+/* Label beside the field, as on the board: "Register with Beta-Key: [ ] [Register]". */
+@media (min-width: 761px) {
+  .beta-form {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 16px;
+  }
+  .beta-form-note { grid-column: 1 / -1; }
+}
+
+/* ── Beta-key form ─────────────────────────────────────────────────────────── */
+.beta-form { display: grid; gap: 12px; justify-items: center; }
+
+.beta-form-label {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.beta-form-row {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  padding: 6px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--border-strong);
+  background: color-mix(in oklab, var(--surface) 60%, transparent);
+  backdrop-filter: blur(16px);
+  transition: border-color 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+}
+
+.beta-form-row:focus-within {
+  border-color: color-mix(in oklab, var(--primary-soft) 70%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--primary-soft) 18%, transparent);
+}
+
+.beta-form-input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0 16px;
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: var(--step-0);
+  letter-spacing: 0.08em;
+}
+
+.beta-form-input::placeholder { color: var(--fg-muted); letter-spacing: 0.08em; }
+.beta-form-input[aria-invalid="true"] { color: var(--danger); }
+
+.beta-form-btn { padding: 12px 26px; }
+
+.beta-form-note { font-size: var(--step--1); color: var(--fg-muted); }
+.beta-form-note a { color: var(--primary-soft); text-decoration: underline; text-underline-offset: 3px; }
+.beta-form-note.is-error { color: var(--danger); }
+
+/* ── Test cases ────────────────────────────────────────────────────────────── */
+.case-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: clamp(170px, 26vh, 280px);
+}
+
+.case-card { padding: 26px; display: grid; gap: 16px; align-content: start; justify-items: start; }
+
+.case-title {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.case-roles { display: grid; gap: 12px; margin: 0; }
+.case-roles div { display: grid; gap: 4px; }
+
+.case-roles dt {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--primary-soft);
+}
+
+.case-roles dd { margin: 0; font-size: var(--step--1); color: var(--fg-secondary); line-height: 1.55; }
+
+.case-out {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  width: 100%;
+}
+
+.case-out span {
+  font-size: 11px;
+  padding: 5px 11px;
+  border-radius: var(--r-pill);
+  border: 1px solid color-mix(in oklab, var(--primary-soft) 40%, transparent);
+  background: color-mix(in oklab, var(--primary) 12%, transparent);
+  color: var(--fg);
+}
+
 /* ── Responsive ────────────────────────────────────────────────────────────── */
 @media (max-width: 1020px) {
   .nav-links { display: none; }
@@ -757,6 +949,12 @@ html.light .peek-card:hover {
   .levels { grid-template-columns: 1fr; }
   .footer-cols { grid-template-columns: repeat(2, 1fr); }
   .nav-cta { display: none; }
+  .btn-google span { display: none; }
+  .btn-google { padding: 9px; }
+  .case-grid { grid-template-columns: minmax(0, 1fr); margin-top: clamp(120px, 20vh, 200px); }
+  .beta-form-row { flex-direction: column; border-radius: var(--r-lg); }
+  .beta-form-input { padding: 12px 14px; text-align: center; }
+  .hero-promises { padding: 18px 18px; }
   .roster-lists { grid-template-columns: minmax(0, 1fr); }
   .picker-row { flex-direction: column; align-items: flex-start; }
   .section { padding-block: clamp(80px, 12vh, 120px); }

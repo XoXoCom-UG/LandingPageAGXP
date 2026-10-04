@@ -1,16 +1,13 @@
 "use client";
 
 import { Monogram } from "@/components/brand/logo";
+import { BetaForm } from "@/components/ui/beta-form";
 import { Section } from "@/components/ui/section";
 
 /**
- * The close.
- *
- * The waiting list is not live yet, so this section does not pretend to collect
- * addresses — it points at a mailbox and says plainly where things stand. Swap
- * BETA_CONTACT for the real signup URL once the list exists.
+ * The close: the same beta-key door as the hero, for whoever read the whole
+ * page first. Keys are minted in the app and redeemed there.
  */
-const BETA_CONTACT = "mailto:beta@agentixprojects.com?subject=AgXP%20beta%20token";
 
 export function Beta() {
   return (
@@ -19,26 +16,21 @@ export function Beta() {
 
       <div className="beta-inner">
         <p className="eyebrow" data-reveal>
-          <span className="eyebrow-index">07</span> Access
+          <span className="eyebrow-index">08</span> Access
         </p>
 
         <h2 className="display h-1" data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
-          Beta tokens,
+          Beta keys,
           <br />
           <span className="grad-text">handed out in batches.</span>
         </h2>
 
         <p className="lede lede-center" data-reveal style={{ ["--reveal-delay" as string]: "160ms" }}>
-          One token opens one workspace, with both agents in it. The waiting list opens soon.
+          One key opens one workspace, with both agents in it. Got an invitation? Enter it below.
         </p>
 
-        <div className="hero-actions" data-reveal style={{ ["--reveal-delay" as string]: "240ms" }}>
-          <a href={BETA_CONTACT} className="btn btn-primary">
-            Ask for a token
-          </a>
-          <a href="#duo" className="btn btn-ghost">
-            Read it again
-          </a>
+        <div className="beta-register" data-reveal style={{ ["--reveal-delay" as string]: "240ms" }}>
+          <BetaForm />
         </div>
 
         <ul className="beta-facts" data-reveal style={{ ["--reveal-delay" as string]: "320ms" }}>

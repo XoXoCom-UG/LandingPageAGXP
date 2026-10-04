@@ -22,7 +22,7 @@ export function Memory() {
       <div className="split split-reverse">
         <div className="split-text">
           <p className="eyebrow" data-reveal>
-            <span className="eyebrow-index">05</span> Memory
+            <span className="eyebrow-index">03</span> Memory
           </p>
           <h2 className="display h-1" data-reveal style={{ ["--reveal-delay" as string]: "80ms" }}>
             They remember

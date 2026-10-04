@@ -20,7 +20,7 @@ export function Accents() {
 
       <header className="sec-head sec-head-center" data-reveal>
         <p className="eyebrow">
-          <span className="eyebrow-index">06</span> Yours
+          <span className="eyebrow-index">07</span> Yours
         </p>
         <h2 className="display h-1">
           Your screen,

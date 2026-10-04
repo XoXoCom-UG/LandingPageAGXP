@@ -47,20 +47,41 @@ are copies, not imports.
 
 ## Before this goes public
 
-1. **The beta link.** `components/sections/beta.tsx` points at
-   `mailto:beta@agentixprojects.com`. Swap `BETA_CONTACT` for the real waiting
-   list once it exists — the section is written to be honest that the list is
-   not open yet, so update the copy at the same time.
-2. **Legal pages.** `components/ui/footer.tsx` links to `/impressum`,
-   `/datenschutz` and `/agb`, which do not exist in this app yet. Either point
-   them at the app's existing pages or port them across. A public marketing site
-   operated from Germany without an Impressum is a real problem.
-3. **`metadataBase`** in `app/layout.tsx` is set to
+1. **Set `NEXT_PUBLIC_APP_URL` in Vercel** to the app's deployed origin, no
+   trailing slash (e.g. `https://app.agentixprojects.com`). Log in, Continue
+   with Google, Register and the Imprint / Privacy / Terms links all point
+   there (`lib/links.ts`). Without it they resolve on the landing page's own
+   domain and 404.
+2. **The "100% private, no user data is visible" promise** in the hero comes
+   from the strategy board. Make sure it is literally true before it goes
+   public: the app stores conversations in Supabase, so anyone with database
+   access can technically read them. In Germany an overstated privacy claim is
+   a competition-law risk (UWG), not just a wording question.
+3. **Naming a real company as a test case.** The board lists "Trassenplanung
+   DB InfraGO". The page says "Rail route planning with AI tooling" instead —
+   a company's name on a public page needs that company's OK. One string in
+   `components/sections/use-cases.tsx` once you have it.
+4. **`metadataBase`** in `app/layout.tsx` is set to
    `https://agentixprojects.com`. Correct it if the domain differs.
-4. **Open Graph image.** There is none yet; social previews will fall back to
+5. **Open Graph image.** There is none yet; social previews will fall back to
    text only.
-5. **Check the roster is current.** `components/sections/roster.tsx` lists the
+6. **Check the roster is current.** `components/sections/roster.tsx` lists the
    five agents seeded in `supabase/seed.sql`. The live app already shows at
-   least one more ("Digital Transformation Manager"), so the roster has grown
-   past the seed — add any missing profiles here, and update the "5 agent
-   profiles" figure in `components/sections/beta.tsx` with them.
+   least one more ("Digital Transformation Manager") — add any missing
+   profiles there and update the "5 agent profiles" figure in
+   `components/sections/beta.tsx`.
+
+## Hand-over to the app
+
+The landing page signs nobody in itself: sessions live on the app's origin.
+
+- **Log in** and **Continue with Google** open `APP_URL/login`. The user picks
+  Google there — one extra click. To make the landing button start Google
+  directly, the app's login page would need to honour e.g. `?provider=google`
+  and call `signInWithOAuth` on load.
+- **Register with Beta-Key** opens `APP_URL/login?mode=signup&key=AGXP-XXXXXX`.
+  Today the app ignores both parameters, so the user lands on *sign in* and has
+  to type the key again at the beta gate. Two small changes in `agxp-frontend`
+  close that gap: the login page starts in sign-up mode when `mode=signup`, and
+  stashes `key` (e.g. in `sessionStorage`) for `BetaGate` to pre-fill after the
+  account exists.

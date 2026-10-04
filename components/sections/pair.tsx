@@ -27,7 +27,7 @@ export function Pair() {
         <AgentCard
           role="consultant"
           name="Consultant"
-          deliverable="Transformation Concept"
+          deliverable="Execution & Growth · Transformation Concept"
           line="Plans the project with you, station by station: from where you stand today to a concrete concept with goals, KPIs, named tools and a roadmap — the document you take into a budget decision."
           stations={["Current process", "People & systems", "Pain points", "Target state", "Success metrics"]}
           delay={0}
@@ -35,7 +35,7 @@ export function Pair() {
         <AgentCard
           role="coach"
           name="Coach"
-          deliverable="Change Plan"
+          deliverable="Process & Support · Change Plan"
           line="Your sparring partner for the half that decides whether it lands: resistance, team dynamics, communication. Not ready-made answers — the right questions, until you find the next step yourself."
           stations={["Affected roles", "Mood & resistance", "Champions", "Skills & training", "Rollout"]}
           delay={120}
