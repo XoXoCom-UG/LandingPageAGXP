@@ -43,19 +43,35 @@ export function Mascot({
     let mouseX = 0;
     let mouseY = 0;
     let hasMouse = false;
+    let onScreen = false;
     // The Consultant tracks slower and more contained than the Coach.
     const k = role === "consultant" ? 0.1 : 0.18;
+
+    // The loop only runs while the eyes are actually moving and the face is
+    // on screen. Seven mascots each reading layout every frame, forever, was
+    // a steady cost on top of the WebGL scene.
+    function wake() {
+      if (!raf && onScreen && hasMouse) raf = requestAnimationFrame(tick);
+    }
 
     function onMove(e: MouseEvent) {
       mouseX = e.clientX;
       mouseY = e.clientY;
       hasMouse = true;
+      wake();
     }
     window.addEventListener("mousemove", onMove, { passive: true });
 
+    const io = new IntersectionObserver(entries => {
+      onScreen = entries.some(e => e.isIntersecting);
+      if (onScreen) wake();
+    });
+    io.observe(node);
+
     function tick() {
+      raf = 0;
       const el = ref.current;
-      if (el && hasMouse) {
+      if (el && hasMouse && onScreen) {
         const box = el.getBoundingClientRect();
         const cx = box.left + box.width / 2;
         const cy = box.top + box.height / 2;
@@ -72,14 +88,22 @@ export function Mascot({
         curY += (ty - curY) * k;
         el.style.setProperty("--eye-x", `${curX.toFixed(2)}px`);
         el.style.setProperty("--eye-y", `${curY.toFixed(2)}px`);
+        // Keep going only until the eyes have arrived; the next mouse move or
+        // scroll wakes the loop again.
+        if (Math.abs(tx - curX) > 0.02 || Math.abs(ty - curY) > 0.02) {
+          raf = requestAnimationFrame(tick);
+        }
       }
-      raf = requestAnimationFrame(tick);
     }
-    raf = requestAnimationFrame(tick);
+
+    // Scrolling moves the face under a still cursor, so it re-aims on scroll too.
+    window.addEventListener("scroll", wake, { passive: true });
 
     return () => {
       cancelAnimationFrame(raf);
+      io.disconnect();
       window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("scroll", wake);
     };
   }, [role]);
 

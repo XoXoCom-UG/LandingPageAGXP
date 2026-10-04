@@ -108,8 +108,8 @@
 .nav.is-lifted {
   padding: 8px 0;
   background: color-mix(in oklab, var(--bg) 72%, transparent);
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
   border-bottom-color: var(--border);
 }
 
@@ -265,7 +265,7 @@ html.light .theme-sun { opacity: 1; }
   border-radius: var(--r-pill);
   border: 1px solid var(--border);
   background: color-mix(in oklab, var(--surface) 45%, transparent);
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(var(--glass-blur));
   font-size: var(--step--1);
 }
 
@@ -566,7 +566,7 @@ html.light .peek-card:hover {
   border-radius: var(--r-md);
   border: 1px solid var(--border);
   background: color-mix(in oklab, var(--surface) 45%, transparent);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(var(--glass-blur));
   transition: transform 0.45s var(--ease-out), border-color 0.45s var(--ease-out),
               background-color 0.45s var(--ease-out);
 }
@@ -649,7 +649,7 @@ html.light .peek-card:hover {
   padding: 18px 0;
   border-block: 1px solid var(--border);
   background: color-mix(in oklab, var(--surface) 35%, transparent);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--glass-blur));
   mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
   z-index: 2;
 }
@@ -692,7 +692,7 @@ html.light .peek-card:hover {
   z-index: 2;
   padding-block: 56px 32px;
   background: color-mix(in oklab, var(--bg) 88%, transparent);
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(var(--glass-blur));
 }
 
 .footer-grid {
@@ -851,7 +851,7 @@ html.light .peek-card:hover {
   border-radius: var(--r-pill);
   border: 1px solid var(--border-strong);
   background: color-mix(in oklab, var(--surface) 60%, transparent);
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(var(--glass-blur));
   transition: border-color 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
 }
 
@@ -967,4 +967,19 @@ html.light .peek-card:hover {
   .swatches { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .beta-facts { gap: 22px; }
   .logo-word { display: none; }
+}
+
+/* ?fps readout */
+.fps-meter {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  z-index: 60;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #9fe2c5;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  pointer-events: none;
 }

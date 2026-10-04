@@ -1,4 +1,5 @@
 import { StageMount } from "@/components/three/stage-mount";
+import { FpsMeter } from "@/components/ui/fps-meter";
 import { Nav } from "@/components/ui/nav";
 import { Footer } from "@/components/ui/footer";
 import { Hero } from "@/components/sections/hero";
@@ -21,6 +22,7 @@ export default function Page() {
   return (
     <>
       <StageMount />
+      <FpsMeter />
       <Nav />
 
       <main className="page" id="top">

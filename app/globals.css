@@ -33,8 +33,12 @@
   --warn: #D89434;
   --danger: #E0574A;
 
-  /* Glass — the panels that float over the WebGL scene. */
-  --glass-bg: rgba(28, 29, 31, 0.55);
+  /* Glass — the panels that float over the WebGL scene. The blur is kept
+     deliberately tiny: its cost grows with the radius and is paid again on
+     every frame the canvas behind it moves. The panels are a little more
+     opaque instead, so text over the scene stays readable. */
+  --glass-blur: 6px;
+  --glass-bg: rgba(28, 29, 31, 0.68);
   --glass-edge: rgba(255, 255, 255, 0.12);
   --glass-shine: rgba(255, 255, 255, 0.05);
   --glass-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.75);
@@ -89,7 +93,7 @@ html.light {
   --warn: #9A6A16;
   --danger: #B84B3E;
 
-  --glass-bg: rgba(255, 255, 255, 0.62);
+  --glass-bg: rgba(255, 255, 255, 0.76);
   --glass-edge: rgba(0, 0, 0, 0.08);
   --glass-shine: rgba(255, 255, 255, 0.9);
   --glass-shadow: 0 20px 50px -24px rgba(24, 24, 27, 0.35);
@@ -223,8 +227,8 @@ img, svg, canvas { display: block; max-width: 100%; }
   background: var(--glass-bg);
   border: 1px solid var(--glass-edge);
   border-radius: var(--r-lg);
-  backdrop-filter: blur(22px) saturate(140%);
-  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
   box-shadow: var(--glass-shadow);
   overflow: hidden;
 }
@@ -322,7 +326,7 @@ img, svg, canvas { display: block; max-width: 100%; }
   background: color-mix(in oklab, var(--surface) 70%, transparent);
   font-size: var(--step--1);
   color: var(--fg-secondary);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--glass-blur));
 }
 
 .chip-dot {
@@ -368,8 +372,9 @@ img, svg, canvas { display: block; max-width: 100%; }
   inset: 0;
   z-index: 40;
   pointer-events: none;
-  opacity: 0.035;
-  mix-blend-mode: overlay;
+  /* No blend mode: an overlay blend over a moving WebGL canvas forces a
+     full-screen composite every frame. Plain low opacity looks the same. */
+  opacity: 0.025;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -394,4 +399,30 @@ html.js [data-reveal].is-in {
   border: 0;
   background: linear-gradient(90deg, transparent, var(--border-strong) 20%, var(--border-strong) 80%, transparent);
   margin: 0;
+}
+
+/* ── Lowest render tier (lib/perf.ts) ─────────────────────────────────────────
+   When the frame rate cannot hold even after the scene has stepped down, the
+   glass stops blurring the canvas behind it and becomes solid instead. */
+html.perf-low * {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html.perf-low .glass { background: color-mix(in oklab, var(--surface) 94%, transparent); }
+html.perf-low .grain { display: none; }
+
+/* Static backdrop for machines that would render WebGL on the CPU
+   (components/three/stage-mount.tsx). The same light as the scene - a glow
+   where the core sits, a fainter one lower down, the grid - with nothing that
+   has to be redrawn while scrolling. */
+.stage-static {
+  background:
+    radial-gradient(38% 30% at 50% 34%, color-mix(in oklab, var(--primary-soft) 30%, transparent), transparent 70%),
+    radial-gradient(30% 26% at 78% 82%, color-mix(in oklab, var(--primary) 26%, transparent), transparent 70%),
+    radial-gradient(26% 22% at 16% 68%, color-mix(in oklab, var(--primary-soft) 14%, transparent), transparent 70%),
+    linear-gradient(var(--grid-line) 1px, transparent 1px) 0 0 / 64px 64px,
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px) 0 0 / 64px 64px,
+    var(--bg);
+  opacity: calc(0.7 + var(--bloom));
 }

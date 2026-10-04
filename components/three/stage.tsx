@@ -1,13 +1,13 @@
 "use client";
 
-import { Suspense, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, Lightformer } from "@react-three/drei";
-import { Bloom, ChromaticAberration, EffectComposer, Vignette } from "@react-three/postprocessing";
-import { BlendFunction } from "postprocessing";
+import { Environment, Lightformer, PerformanceMonitor } from "@react-three/drei";
+import { Bloom, EffectComposer, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { ACCENTS } from "@/lib/accent";
 import { useLowPower } from "@/lib/hooks";
+import { applyTierClass, dprFor, FPS_CAP, perf, type Tier } from "@/lib/perf";
 import { useTheme } from "@/lib/theme";
 import { clamp01, ease, prefersReducedMotion, scroll } from "@/lib/scroll";
 import { Beams, Core, Dust } from "@/components/three/core";
@@ -21,50 +21,135 @@ import { Robot } from "@/components/three/robot";
  * through the frame as its DOM section scrolls past — so the 3D and the words
  * are locked together by construction, and a resize or a font swap can never
  * put them out of sync.
+ *
+ * Cost is governed in three places, because the same page has to hold up on a
+ * 60 Hz laptop and on a 144 Hz desktop with display scaling (lib/perf.ts):
+ * frames are capped at FPS_CAP, the canvas renders to a pixel budget rather
+ * than at native resolution, and a performance monitor steps the quality tier
+ * down when the frame rate falls and back up when it recovers.
  */
 export function Stage() {
   const { accent, theme } = useTheme();
   const lowPower = useLowPower();
   const reduced = typeof window !== "undefined" && prefersReducedMotion();
 
+  const [tier, setTier] = useState<Tier>(2);
+  const [dpr, setDpr] = useState(1);
+
+  // Phones and small screens start one step down instead of finding out.
+  useEffect(() => {
+    if (lowPower) setTier(t => (t > 1 ? 1 : t));
+  }, [lowPower]);
+
+  useEffect(() => {
+    function update() {
+      const next = dprFor(tier);
+      perf.tier = tier;
+      perf.dpr = next;
+      setDpr(next);
+    }
+    update();
+    applyTierClass(tier);
+    window.addEventListener("resize", update, { passive: true });
+    return () => window.removeEventListener("resize", update);
+  }, [tier]);
+
   const fogColor = theme === "light" ? "#FAFAF9" : "#0B0C0E";
+  const light = theme === "light";
 
   return (
     <div className="stage" aria-hidden="true">
       <Canvas
-        dpr={lowPower ? [1, 1.3] : [1, 1.9]}
-        gl={{ alpha: true, antialias: !lowPower, powerPreference: "high-performance" }}
+        dpr={dpr}
+        gl={{ alpha: true, antialias: true, powerPreference: "high-performance", stencil: false }}
         camera={{ position: [0, 0, 9], fov: 42, near: 0.1, far: 90 }}
-        frameloop={reduced ? "demand" : "always"}
+        // Frames are driven by FrameLimiter, not by the monitor's refresh rate.
+        frameloop="demand"
       >
+        <FrameLimiter fps={reduced ? 30 : FPS_CAP} />
+        <FpsProbe />
+        <PerformanceMonitor
+          // Judged against the capped rate, so a 144 Hz screen is not "slow"
+          // for drawing 60.
+          bounds={() => [Math.round(FPS_CAP * 0.78), FPS_CAP + 1]}
+          flipflops={4}
+          onDecline={() => setTier(t => (t > 0 ? ((t - 1) as Tier) : t))}
+          onIncline={() => setTier(t => (t < 2 && !lowPower ? ((t + 1) as Tier) : t))}
+          onFallback={() => setTier(0)}
+        />
+
         <fog attach="fog" args={[fogColor, 14, 42]} />
 
         <Suspense fallback={null}>
           <Lighting accent={accent.primary} soft={accent.soft} theme={theme} />
-          <World accent={accent.primary} soft={accent.soft} lowPower={lowPower} light={theme === "light"} />
-          <Ambience soft={accent.soft} deep={accent.primary} lowPower={lowPower} light={theme === "light"} />
+          <World accent={accent.primary} soft={accent.soft} lowPower={lowPower} light={light} />
+          <Ambience soft={accent.soft} deep={accent.primary} tier={tier} light={light} />
         </Suspense>
 
-        {!lowPower && (
-          <EffectComposer enableNormalPass={false}>
+        {tier >= 1 && (
+          // multisampling defaults to 8 (8x MSAA on full-size buffers); that
+          // alone was the single biggest cost on integrated GPUs.
+          <EffectComposer enableNormalPass={false} multisampling={tier === 2 ? 2 : 0}>
             <Bloom
-              intensity={theme === "light" ? 0.42 : 1.15}
-              luminanceThreshold={theme === "light" ? 0.72 : 0.18}
+              intensity={light ? 0.42 : 1.15}
+              luminanceThreshold={light ? 0.72 : 0.18}
               luminanceSmoothing={0.35}
               mipmapBlur
+              levels={tier === 2 ? 6 : 4}
             />
-            <ChromaticAberration
-              offset={new THREE.Vector2(0.0004, 0.0006)}
-              blendFunction={BlendFunction.NORMAL}
-              radialModulation={false}
-              modulationOffset={0}
-            />
-            <Vignette eskil={false} offset={0.28} darkness={theme === "light" ? 0.18 : 0.62} />
+            <Vignette eskil={false} offset={0.28} darkness={light ? 0.18 : 0.62} />
           </EffectComposer>
         )}
       </Canvas>
     </div>
   );
+}
+
+/**
+ * Asks for a frame at most `fps` times a second. With frameloop="demand",
+ * nothing else draws, so a 144 Hz monitor costs the same as a 60 Hz one.
+ */
+function FrameLimiter({ fps }: { fps: number }) {
+  const { invalidate } = useThree();
+
+  useEffect(() => {
+    let raf = 0;
+    let last = 0;
+    const interval = 1000 / fps;
+    function tick(now: number) {
+      // A millisecond of slack so 60 on a 60 Hz screen does not alias to 30.
+      if (now - last >= interval - 1) {
+        last = now;
+        invalidate();
+      }
+      raf = requestAnimationFrame(tick);
+    }
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [fps, invalidate]);
+
+  return null;
+}
+
+/** Counts drawn frames into perf.fps for the ?fps meter. */
+function FpsProbe() {
+  const frames = useRef(0);
+  const since = useRef(0);
+  const { gl } = useThree();
+
+  useFrame(state => {
+    frames.current++;
+    const t = state.clock.elapsedTime;
+    if (t - since.current >= 0.5) {
+      perf.fps = Math.round(frames.current / (t - since.current));
+      const size = gl.getDrawingBufferSize(new THREE.Vector2());
+      perf.pixels = size.x * size.y;
+      frames.current = 0;
+      since.current = t;
+    }
+  });
+
+  return null;
 }
 
 function Lighting({ accent, soft, theme }: { accent: string; soft: string; theme: string }) {
@@ -98,12 +183,12 @@ function Lighting({ accent, soft, theme }: { accent: string; soft: string; theme
 function Ambience({
   soft,
   deep,
-  lowPower,
+  tier,
   light,
 }: {
   soft: string;
   deep: string;
-  lowPower: boolean;
+  tier: Tier;
   light: boolean;
 }) {
   const group = useRef<THREE.Group>(null);
@@ -117,8 +202,8 @@ function Ambience({
 
   return (
     <group ref={group}>
-      <Dust count={lowPower ? 320 : 1000} soft={soft} deep={deep} depth={18} light={light} />
-      {!lowPower && <Beams soft={soft} depth={18} light={light} />}
+      <Dust key={tier} count={tier === 2 ? 1000 : tier === 1 ? 500 : 260} soft={soft} deep={deep} depth={18} light={light} />
+      {tier === 2 && <Beams soft={soft} depth={18} light={light} />}
     </group>
   );
 }
@@ -366,8 +451,6 @@ function Slot({
   depth?: number;
 }) {
   const ref = useRef<THREE.Group>(null);
-  const { invalidate } = useThree();
-
   useFrame(() => {
     const g = ref.current;
     if (!g) return;
@@ -383,7 +466,6 @@ function Slot({
     g.position.y = (p - 0.5) * travel;
     g.position.z = -depth * (1 - eased);
     g.scale.setScalar(0.72 + eased * 0.28);
-    invalidate();
   });
 
   return <group ref={ref}>{children}</group>;
