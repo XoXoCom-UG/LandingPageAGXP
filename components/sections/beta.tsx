@@ -26,7 +26,7 @@ export function Beta() {
         </h2>
 
         <p className="lede lede-center" data-reveal style={{ ["--reveal-delay" as string]: "160ms" }}>
-          One key opens one workspace, with both agents in it. Got an invitation? Enter it below.
+          One key opens one workspace, with both agents in it. Write to us and we&rsquo;ll add you to the next round.
         </p>
 
         <div className="beta-register" data-reveal style={{ ["--reveal-delay" as string]: "240ms" }}>
@@ -47,8 +47,8 @@ export function Beta() {
             <span>visual block types</span>
           </li>
           <li>
-            <b>∞</b>
-            <span>projects, one memory</span>
+            <b>1</b>
+            <span>memory across projects</span>
           </li>
         </ul>
 

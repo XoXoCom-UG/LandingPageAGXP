@@ -45,42 +45,46 @@ are copies, not imports.
   particles, and steps the whole 3D world back; and without JS the page renders
   fully visible rather than stuck at `opacity: 0`.
 
+## Legal (Germany / EU)
+
+The page is built to need no consent banner: no cookies, no analytics, no
+third-party requests (fonts are self-hosted by `next/font`, the 3D scene is
+generated in the browser). The only storage is `agxp-theme` / `agxp-accent` in
+`localStorage`, written when a visitor picks a theme — strictly necessary under
+§ 25 Abs. 2 Nr. 2 TDDDG. **Adding analytics, an embed or a CDN font changes
+that** — update `components/legal/privacy.tsx` and add real opt-in consent.
+
+- `/impressum` and `/datenschutz` (German, binding) and `/imprint`, `/privacy`
+  (English translations) live on this site, linked from the footer.
+- **Fill in `lib/company.ts`** — it is a copy of `agxp-frontend/lib/company.ts`
+  and both are blank. Until it is filled, the legal pages show a visible
+  "incomplete" notice, in production too. A public commercial site in Germany
+  without a complete Impressum can be sent a cease-and-desist (Abmahnung).
+- The privacy policy assumes hosting on **Vercel**. If the host changes, change
+  section 2.
+- `info@xoxocom.net` must be a real, monitored mailbox.
+
 ## Before this goes public
 
-1. **Set `NEXT_PUBLIC_APP_URL` in Vercel** to the app's deployed origin, no
-   trailing slash (e.g. `https://app.agentixprojects.com`). Log in, Continue
-   with Google, Register and the Imprint / Privacy / Terms links all point
-   there (`lib/links.ts`). Without it they resolve on the landing page's own
-   domain and 404.
-2. **The "100% private, no user data is visible" promise** in the hero comes
-   from the strategy board. Make sure it is literally true before it goes
-   public: the app stores conversations in Supabase, so anyone with database
-   access can technically read them. In Germany an overstated privacy claim is
-   a competition-law risk (UWG), not just a wording question.
-3. **`metadataBase`** in `app/layout.tsx` is set to
+1. **Fill `lib/company.ts`** (see above).
+2. **`metadataBase`** in `app/layout.tsx` is set to
    `https://agentixprojects.com`. Correct it if the domain differs.
-4. **Open Graph image.** There is none yet; social previews will fall back to
+3. **Open Graph image.** There is none yet; social previews will fall back to
    text only.
-5. **Check the roster is current.** `components/sections/roster.tsx` lists the
-   five agents seeded in `supabase/seed.sql`. The live app already shows at
-   least one more ("Digital Transformation Manager") — add any missing
-   profiles there and update the "5 agent profiles" figure in
-   `components/sections/beta.tsx`.
+4. **Check the roster is current.** `components/sections/roster.tsx` lists the
+   five agents seeded in `supabase/seed.sql`. Add any missing profiles there
+   and update the "5 agent profiles" figure in `components/sections/beta.tsx`.
+5. **Claims are advertising.** The hero used to promise a "100% private
+   service — no user data is visible", which was not literally true (§ 5 UWG).
+   Keep every promise on the page something the product actually does.
 
-## Hand-over to the app
+## Access during the closed beta
 
-The landing page signs nobody in itself: sessions live on the app's origin.
-
-- **Log in** and **Continue with Google** open `APP_URL/login`. The user picks
-  Google there — one extra click. To make the landing button start Google
-  directly, the app's login page would need to honour e.g. `?provider=google`
-  and call `signInWithOAuth` on load.
-- **Register with Beta-Key** opens `APP_URL/login?mode=signup&key=AGXP-XXXXXX`.
-  Today the app ignores both parameters, so the user lands on *sign in* and has
-  to type the key again at the beta gate. Two small changes in `agxp-frontend`
-  close that gap: the login page starts in sign-up mode when `mode=signup`, and
-  stashes `key` (e.g. in `sessionStorage`) for `BetaGate` to pre-fill after the
-  account exists.
+There is no login on the landing page for now. Every door — the nav button,
+the hero, the closing section, the footer — is a `mailto:` link that asks for a
+beta key (`lib/links.ts`). Nothing is submitted from the page, so it has no
+form data to protect. When login opens, bring back links to the app's
+`/login` and add its Google sign-in to the privacy policy.
 
 ## Emails
 

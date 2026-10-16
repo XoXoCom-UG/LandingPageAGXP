@@ -1,30 +1,29 @@
 /**
- * Where the landing page hands people over to the product.
+ * Where the landing page sends people.
  *
- * The landing page has no auth of its own — sessions live on the app's origin,
- * so signing in, Google and redeeming a beta key all happen there. Set
- * NEXT_PUBLIC_APP_URL in Vercel to the app's deployed origin (no trailing
- * slash), e.g. https://app.agentixprojects.com.
+ * During the closed beta there is no login here: the only door is asking for a
+ * key, by email. That keeps the page free of forms, cookies and a backend — a
+ * visitor's data only ever reaches us if they choose to write.
  */
-export const APP_URL = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/+$/, "");
 
-export const LOGIN_URL = `${APP_URL}/login`;
+/** Same promise the app's beta gate makes: write to us. */
+export const BETA_EMAIL = "info@xoxocom.net";
 
 /**
- * The key travels as `?key=` so the app can pre-fill its beta gate. The app's
- * login page does not read it yet — see README, "Hand-over to the app".
+ * The prefilled email. It asks for as little as we need to decide on a key —
+ * no name, phone or role fields — because whatever is asked for here has to be
+ * justified in the privacy policy.
  */
-export function registerUrl(key: string): string {
-  const params = new URLSearchParams({ mode: "signup", key });
-  return `${LOGIN_URL}?${params.toString()}`;
-}
+export const BETA_REQUEST = `mailto:${BETA_EMAIL}?${new URLSearchParams({
+  subject: "AgentiX beta key request",
+  body: "Hi AgentiX team,\n\nI'd like a beta key.\n\nCompany:\nWhat I'd like to use AgentiX for:\n",
+})
+  .toString()
+  // mailto wants %20, not "+", or some mail apps show the plus signs literally.
+  .replace(/\+/g, "%20")}`;
 
-/** The app's own legal pages — the landing page links to them rather than copying them. */
+/** This site's own legal pages — German is the binding version. */
 export const LEGAL_LINKS = [
-  { label: "Imprint", href: `${APP_URL}/impressum` },
-  { label: "Privacy", href: `${APP_URL}/datenschutz` },
-  { label: "Terms", href: `${APP_URL}/agb` },
+  { label: "Imprint", href: "/impressum" },
+  { label: "Privacy", href: "/datenschutz" },
 ];
-
-/** For people without a key. Same promise the app's beta gate makes: write to us. */
-export const BETA_CONTACT = "mailto:beta@agentixprojects.com?subject=AgentiX%20beta%20key";

@@ -12,7 +12,10 @@ const PROMISES = [
   "Execute your own AI business ideas",
   "Progress your team with AI innovation trends",
   "Foster your company's success with high-quality AI support",
-  "Protect your enterprise's data with our 100% private service — no user data is visible",
+  // Was "100% private — no user data is visible". That is not literally true
+  // (the app stores conversations and sends them to the model provider), and in
+  // Germany an overstated privacy claim is misleading advertising (§ 5 UWG).
+  "Keep your enterprise's data under your control — no ad tracking, nothing passed to advertisers",
   "Achieve your project goals with AgentiX's AI Coaches and Consultants",
 ];
 

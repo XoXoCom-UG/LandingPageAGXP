@@ -2,12 +2,12 @@
 
 import { AccentPicker } from "@/components/ui/nav";
 import { Logo } from "@/components/brand/logo";
-import { LEGAL_LINKS, LOGIN_URL } from "@/lib/links";
+import { BETA_REQUEST, LEGAL_LINKS } from "@/lib/links";
 
 /**
- * The legal links point at the app's own Impressum, Datenschutz and AGB rather
- * than copies — one set of legal text, kept in one place. They resolve once
- * NEXT_PUBLIC_APP_URL is set.
+ * Impressum and Datenschutz live on this site, not only in the app: § 5 DDG
+ * wants them reachable from every page of the site that is actually public,
+ * and the app is not public during the closed beta.
  */
 
 export function Footer() {
@@ -31,7 +31,7 @@ export function Footer() {
               <a href="#roster">Profiles</a>
               <a href="#interview">The interview</a>
               <a href="#beta">Beta access</a>
-              <a href={LOGIN_URL}>Log in</a>
+              <a href={BETA_REQUEST}>Request a beta key</a>
             </nav>
 
             <nav aria-label="Legal">
